@@ -1,0 +1,32 @@
+{
+  "name": "wislin",
+  "version": "1.0.0",
+  "description": "What i should learn (immediately) next!",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "./node_modules/.bin/nodemon ./bin/www",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amir5121/wislin-core.git"
+  },
+  "keywords": [
+    "wislin"
+  ],
+  "author": "Amir Hosein Heshmati",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/amir5121/wislin-core/issues"
+  },
+  "homepage": "https://github.com/amir5121/wislin-core#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "debug": "^4.3.1",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0"
+  }
+}
