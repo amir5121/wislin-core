@@ -1,0 +1,15 @@
+const mongoose = require("mongoose")
+
+mongoose.connect(process.env.MONGO_DB_CONNECTION_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+
+const db = mongoose.connection
+
+db.on("error", console.error.bind(console, "connection error:"))
+db.once("open", function () {
+  console.log("Mongo connection is now open")
+})
+
+module.exports = mongoose
