@@ -1,10 +1,10 @@
 var express = require("express")
 var router = express.Router()
-var passport = require("../config/auth")
-/* GET users listing. */
-router.get("/", function (req, res, next) {
-  res.send("respond with a resource")
-})
+var passport = require("../config/passport")
+
+// router.get("/", function (req, res, next) {
+//   res.send("respond with a resource")
+// })
 
 router.get(
   "/auth/google/",
