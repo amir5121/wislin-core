@@ -18,7 +18,6 @@ router.get(
   passport.authenticate("google"),
   (req, res) => {
     res.send(req.user)
-    res.send("you reached the redirect URI")
   }
 )
 

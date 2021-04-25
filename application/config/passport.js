@@ -21,8 +21,8 @@ passport.use(
           //if not, create a new user
           User({
             googleId: profile.id,
-            email: profile.emails[0],
-            profilePicture: profile.photos[0],
+            email: profile.emails[0].value,
+            profilePicture: profile.photos[0].value,
             firstName: profile.name.givenName,
             lastName: profile.name.familyName,
           })
@@ -37,11 +37,13 @@ passport.use(
 )
 
 passport.serializeUser((user, done) => {
+  console.log('serializeUser', user)
   done(null, user.id)
 })
 
 passport.deserializeUser((id, done) => {
   User.findById(id).then((user) => {
+    console.log('deserializeUser', user)
     done(null, user)
   })
 })

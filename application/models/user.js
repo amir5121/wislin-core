@@ -7,7 +7,7 @@ const User = mongoose.model(
     lastName: String,
     googleId: String,
     birthDate: Date,
-    email: Date,
+    email: String,
     profilePicture: String,
     // methods: {
     //   fullName: () => "${this.firstName} ${this.lastName}",
