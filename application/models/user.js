@@ -8,10 +8,11 @@ const User = mongoose.model(
     googleId: String,
     birthDate: Date,
     email: Date,
+    profilePicture: String,
     // methods: {
     //   fullName: () => "${this.firstName} ${this.lastName}",
     // },
   })
 )
 
-module.exports.User = User
+module.exports = User
