@@ -1,10 +1,11 @@
-var express = require("express")
-var router = express.Router()
-var passport = require("../config/passport")
+const express = require("express")
+const router = express.Router()
+const passport = require("../config/passport")
 
-// router.get("/", function (req, res, next) {
-//   res.send("respond with a resource")
-// })
+router.get("/self/", function (req, res, _) {
+  console.log("AAAAAAAAAAAAAAAAAA", req.user)
+  res.send(req.user)
+})
 
 router.get(
   "/auth/google/",
