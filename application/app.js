@@ -23,7 +23,12 @@ if (app.get("env") === "production") {
   app.set("trust proxy", 1) // trust first proxy
   sess.cookie.secure = true // serve secure cookies
 } else {
-  app.use(cors())
+  app.use(cors({
+    // origin: 'http://localhost:3000',
+    credentials: true,
+    origin: true,
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  }))
 }
 
 app.use(session(sess))
