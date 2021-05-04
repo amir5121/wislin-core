@@ -1,12 +1,12 @@
 import passport from "passport"
 import {OAuth2Strategy} from "passport-google-oauth"
-import User, {UserDocument} from "../models/user"
+import User from "../models/user"
 
 passport.use(
   new OAuth2Strategy(
     {
-      clientID: process.env.GOOGLE_CLIEN_ID,
-      clientSecret: process.env.GOOGLE_CLIEN_SECRET,
+      clientID: process.env.GOOGLE_CLIEN_ID || "",
+      clientSecret: process.env.GOOGLE_CLIEN_SECRET || "",
       callbackURL: "/api/user/auth/google/redirect/",
     },
     (accessToken, refreshToken, profile, done) => {
@@ -21,10 +21,10 @@ passport.use(
           //if not, create a new user
           new User({
             googleId: profile.id,
-            email: profile.emails[0].value,
-            profilePicture: profile.photos[0].value,
-            firstName: profile.name.givenName,
-            lastName: profile.name.familyName,
+            email: profile.emails && profile.emails[0].value,
+            profilePicture: profile.photos && profile.photos[0].value,
+            firstName: profile?.name?.givenName,
+            lastName: profile?.name?.familyName,
           })
             .save()
             .then((newUser) => {
@@ -36,7 +36,7 @@ passport.use(
   )
 )
 
-passport.serializeUser((user: UserDocument, done) => {
+passport.serializeUser((user, done) => {
   console.log('serializeUser', user)
   done(null, user.id)
 })

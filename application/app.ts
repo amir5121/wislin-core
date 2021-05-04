@@ -14,7 +14,7 @@ app.use(helmet())
 app.use(logger("dev"))
 
 let sess = {
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || "pickasecret",
   resave: false,
   saveUninitialized: false,
   cookie: {

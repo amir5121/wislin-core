@@ -7,9 +7,10 @@
     "sourceMap": true,
     "outDir": "dist",
     "skipLibCheck": true,
-//    "noImplicitAny": true,
+    "strict": true
+    //    "noImplicitAny": true,
   },
   "lib": [
     "es2015"
-  ]
+  ],
 }
