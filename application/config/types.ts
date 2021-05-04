@@ -5,9 +5,3 @@ declare module "express" {
     user: UserDocument
   }
 }
-
-declare module "passport" {
-  export interface Request {
-    user: UserDocument
-  }
-}
