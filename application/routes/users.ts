@@ -1,11 +1,9 @@
 import express from "express"
-import {Request} from "express";
-// import passport from "../config/passport"
 import passport from "../config/passport"
 
 const router = express.Router()
 
-router.get("/self/", function (req: Request, res, _) {
+router.get("/self/", function (req, res, _) {
   console.log("AAAAAAAAAAAAAAAAAA", req.user)
   res.send(req.user || {})
 })
