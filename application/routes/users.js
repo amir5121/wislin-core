@@ -4,7 +4,7 @@ const passport = require("../config/passport")
 
 router.get("/self/", function (req, res, _) {
   console.log("AAAAAAAAAAAAAAAAAA", req.user)
-  res.send(req.user)
+  res.send(req.user || {})
 })
 
 router.get(
