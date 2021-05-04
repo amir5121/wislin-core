@@ -7,8 +7,17 @@
     "sourceMap": true,
     "outDir": "dist",
     "skipLibCheck": true,
-    "strict": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "baseUrl": ".",
+    "strict": true
   },
+  "files": [
+    "config/types.ts"
+  ],
+  "include": [
+    "**/*.ts",
+  ],
   "lib": [
     "es2015"
   ]

@@ -5,7 +5,7 @@
   "main": "app.ts",
   "scripts": {
     "build": "tsc",
-    "start": "tsc && node ./dist/server.js",
+    "start": "tsc && node  -r dotenv/config ./dist/server.js",
     "dev": "concurrently \"tsc -w\"  \"./node_modules/.bin/nodemon -r dotenv/config ./dist/server.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

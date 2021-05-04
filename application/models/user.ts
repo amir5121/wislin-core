@@ -1,7 +1,7 @@
 import mongoose from "../config/mongoose";
 
 export type UserDocument = mongoose.Document & {
-  email: string;
+  email: string
   firstName: string
   lastName: string
   googleId: string
