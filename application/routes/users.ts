@@ -4,7 +4,7 @@ import passport from "../config/passport"
 const router = express.Router()
 
 router.get("/self/", function (req, res, _) {
-  console.log("AAAAAAAAAAAAAAAAAA", req.user)
+  console.log("AAAAAAAAAAAAAAAAAA", req.user?.fullName())
   res.send(req.user || {})
 })
 
