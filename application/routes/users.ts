@@ -1,8 +1,11 @@
-const express = require("express")
-const router = express.Router()
-const passport = require("../config/passport")
+import express from "express"
+import {Request} from "express";
+// import passport from "../config/passport"
+import passport from "../config/passport"
 
-router.get("/self/", function (req, res, _) {
+const router = express.Router()
+
+router.get("/self/", function (req: Request, res, _) {
   console.log("AAAAAAAAAAAAAAAAAA", req.user)
   res.send(req.user || {})
 })
@@ -27,4 +30,4 @@ router.get("/auth/logout", (req, res) => {
   res.send(req.user)
 })
 
-module.exports = router
+export default router

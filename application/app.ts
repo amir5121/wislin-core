@@ -1,22 +1,25 @@
-const express = require("express")
-const session = require("express-session")
-const helmet = require("helmet")
-const path = require("path")
-const logger = require("morgan")
-const passport = require("./config/passport")
-const indexRouter = require("./routes/index")
-const usersRouter = require("./routes/users")
-const cors = require('cors')
+import express from "express"
+import session from "express-session"
+import helmet from "helmet"
+import path from "path"
+import logger from "morgan"
+// import passport from "./config/passport"
+import passport from "passport"
+import indexRouter from "./routes"
+import usersRouter from "./routes/users"
+import cors from 'cors'
 
 const app = express()
 app.use(helmet())
 app.use(logger("dev"))
 
-var sess = {
+let sess = {
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: {},
+  cookie: {
+    secure: false
+  },
 }
 
 if (app.get("env") === "production") {
@@ -44,15 +47,15 @@ app.use("/", indexRouter)
 app.use("/api/user", usersRouter)
 
 // error handler
-app.use(function (err, req, res, _) {
-  // set locals, only providing error in development
-  res.locals.message = err.message
-  res.locals.error = req.app.get("env") === "development" ? err : {}
+// app.use(function (err, req: , res, _) {
+//   // set locals, only providing error in development
+//   res.locals.message = err.message
+//   res.locals.error = req.app.get("env") === "development" ? err : {}
+//
+//   // render the error page
+//   res.status(err.status || 500)
+//   console.log(res.locals.message, res.locals.error)
+//   // res.render("error")
+// })
 
-  // render the error page
-  res.status(err.status || 500)
-  console.log(res.locals.message, res.locals.error)
-  // res.render("error")
-})
-
-module.exports = app
+export default app

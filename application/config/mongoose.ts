@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose";
 
 mongoose.connect(process.env.MONGO_DB_CONNECTION_URL, {
   useNewUrlParser: true,
@@ -12,4 +12,4 @@ db.once("open", function () {
   console.log("Mongo connection is now open")
 })
 
-module.exports = mongoose
+export default mongoose
