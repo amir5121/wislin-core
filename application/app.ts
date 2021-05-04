@@ -7,13 +7,18 @@ import passport from "passport"
 import indexRouter from "./routes"
 import usersRouter from "./routes/users"
 import cors from 'cors'
+import redis from 'redis'
+import connectRedis from 'connect-redis'
 
 const app = express()
 app.use(helmet())
 app.use(logger("dev"))
 
+const RedisStore = connectRedis(session)
+
 let sess = {
   secret: process.env.SESSION_SECRET || "pickasecret",
+  store: new RedisStore({client: redis.createClient()}),
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -32,6 +37,7 @@ if (app.get("env") === "production") {
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
   }))
 }
+
 
 app.use(session(sess))
 app.use(express.json())

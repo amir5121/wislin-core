@@ -6,13 +6,11 @@ export type UserDocument = mongoose.Document & {
   lastName: string
   googleId: string
   birthDate: Date
+  createdAt: Date
   profilePicture: string
-
-  fullName: fullNameFunction;
-  gravatar: (size: number) => string;
+  fullName: () => string;
+  // gravatar: (size: number) => string;
 };
-
-type fullNameFunction = () => string;
 
 
 const userSchema = new mongoose.Schema<UserDocument>(
@@ -28,7 +26,7 @@ const userSchema = new mongoose.Schema<UserDocument>(
 );
 
 userSchema.methods.fullName = function () {
-  return "${this.firstName} ${this.lastName}"
+  return `${this.firstName} ${this.lastName}`
 };
 
 const User = mongoose.model<UserDocument>("User", userSchema)
