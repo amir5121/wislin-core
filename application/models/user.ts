@@ -1,4 +1,5 @@
 import mongoose from "../config/mongoose";
+import {Schema} from "mongoose";
 
 export type UserDocument = mongoose.Document & {
   email: string
@@ -7,7 +8,11 @@ export type UserDocument = mongoose.Document & {
   googleId: string
   birthDate: Date
   createdAt: Date
+  updatedAt: Date
   profilePicture: string
+  skills:[
+    {type: Schema.Types.ObjectId, ref: 'Skill'}
+  ]
   fullName: () => string;
   // gravatar: (size: number) => string;
 };
@@ -22,7 +27,7 @@ const userSchema = new mongoose.Schema<UserDocument>(
     email: String,
     profilePicture: String,
   },
-  {timestamps: true},
+  { timestamps: true }
 );
 
 userSchema.methods.fullName = function () {
