@@ -3,6 +3,7 @@ import minimist from "minimist";
 import Seven from "node-7z";
 import download from "../utils/download";
 import { parseString } from "xml2js";
+import Skill from "../models/skill";
 
 const tempPath = "./temp/";
 const filename = "Tags.xml";
@@ -19,6 +20,8 @@ console.log(argv, argv.nocache);
 const sevenZPath = tagsPath.replace("xml", "7z");
 
 function onInsert(err: any, docs: any) {
+  console.log(docs)
+  console.log(typeof docs)
   if (err) {
     console.log("onInsert", err);
   } else {
@@ -34,7 +37,10 @@ function extractAndInsert() {
       return;
     }
     parseString(data, function(err, result) {
-      console.debug(result.tags.row.map((el: any) => {
+      console.debug(result.tags.row[0]);
+      Skill.collection.drop(onInsert)
+      Skill.collection.insertMany(result.tags.row.map((el: any) => {
+        el = el.$;
         return {
           name: el.TagName,
           stackoverflowMeta: {
@@ -43,9 +49,7 @@ function extractAndInsert() {
             count: el.Count
           }
         };
-      }));
-      console.debug(result.tags.row[0]);
-      // Skill.collection.insertMany(result.tags.row, onInsert)
+      }), onInsert);
       //  save to skills
     });
   });

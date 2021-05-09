@@ -6,6 +6,7 @@ import logger from "morgan"
 import passport from "passport"
 import indexRouter from "./routes"
 import usersRouter from "./routes/users"
+import skillsRouter from "./routes/skills"
 import cors from 'cors'
 import redis from 'redis'
 import connectRedis from 'connect-redis'
@@ -50,6 +51,7 @@ app.use(express.static(path.join(__dirname, "public")))
 
 app.use("/", indexRouter)
 app.use("/api/user", usersRouter)
+app.use("/api/skills", skillsRouter)
 
 // error handler
 // app.use(function (err, req: , res, _) {
