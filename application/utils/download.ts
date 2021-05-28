@@ -1,7 +1,9 @@
 import fs from "fs"
 import https from "https"
+import path from "path"
 
 function download(url: string, dest: string, cb: (message?: string) => void) {
+  fs.mkdirSync(path.dirname(dest), { recursive: true })
   const file = fs.createWriteStream(dest)
   const request = https.get(url, (response) => {
       // check if response is success

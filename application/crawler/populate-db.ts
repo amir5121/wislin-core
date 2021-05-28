@@ -1,13 +1,15 @@
 import fs from "fs"
+import path from "path"
 import minimist from "minimist"
 import Seven from "node-7z"
 import download from "../utils/download"
 import { parseString } from "xml2js"
 import Skill from "../models/skill"
 import { tempFolderPath } from "../config/application"
+import { onInsertCallback } from "../config/mongoose"
 
 const filename = "Tags.xml"
-const tagsPath = tempFolderPath + filename
+const tagsPath = path.join(tempFolderPath, filename)
 
 if (!fs.existsSync(tempFolderPath)) {
   fs.mkdirSync(tempFolderPath)
@@ -19,15 +21,6 @@ const argv = minimist(process.argv.slice(2), {
 console.log(argv, argv.nocache)
 const sevenZPath = tagsPath.replace("xml", "7z")
 
-function onInsert(err: any, docs: any) {
-  console.log(docs)
-  console.log(typeof docs)
-  if (err) {
-    console.log("onInsert", err)
-  } else {
-    console.info("%d potatoes were successfully stored.", docs.length)
-  }
-}
 
 function extractAndInsert() {
   Seven.extractFull(sevenZPath, tempFolderPath)
@@ -38,7 +31,7 @@ function extractAndInsert() {
     }
     parseString(data, function(err, result) {
       console.debug(result.tags.row[0])
-      Skill.collection.drop(onInsert)
+      Skill.collection.drop(onInsertCallback)
       Skill.collection.insertMany(result.tags.row.map((el: any) => {
         el = el.$
         return {
@@ -49,7 +42,7 @@ function extractAndInsert() {
             count: el.Count
           }
         }
-      }), onInsert)
+      }), onInsertCallback)
       //  save to skills
     })
   })

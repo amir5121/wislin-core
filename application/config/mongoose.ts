@@ -12,4 +12,14 @@ db.once("open", function() {
   console.log("Mongo connection is now open")
 })
 
+export function onInsertCallback(err: any, docs: any) {
+  console.log(docs)
+  console.log(typeof docs)
+  if (err) {
+    console.log("onInsert", err)
+    throw err
+  } else {
+    console.info("%d potatoes were successfully stored.", docs.length)
+  }
+}
 export default mongoose

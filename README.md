@@ -1,8 +1,21 @@
 # wislin-core
 
-What i should learn (immediately) next!
+What I should learn (immediately) next!
 
-# Notes to my self
+# Initialize
+
+## Populate the skills DB
+
+```shell
+npm run populate [-- [--nocache]]
+```
+
+# ----- Notes to my self ------
+
+this should become a cron job or something
+
+        tsc && node -r dotenv/config ./dist/crawler/stackoverflow-rss.js
+
 ## RSS
 
 - [indeed](https://rss.indeed.com/rss)

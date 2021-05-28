@@ -1,1 +1,1 @@
-export const tempFolderPath = "./temp/"
+export const tempFolderPath = "./temp"
