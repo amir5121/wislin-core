@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "tsc && node  -r dotenv/config ./dist/server.js",
-    "populate": "tsc && node  -r dotenv/config ./dist/scripts/populate-db.js",
+    "populate": "tsc && node  -r dotenv/config ./dist/crawler/populate-db.js",
     "dev": "concurrently \"tsc -w\"  \"./node_modules/.bin/nodemon -r dotenv/config ./dist/server.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

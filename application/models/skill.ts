@@ -1,4 +1,4 @@
-import mongoose from "../config/mongoose";
+import mongoose from "../config/mongoose"
 
 export interface SkillDocument extends mongoose.Document {
   name: string
@@ -25,7 +25,7 @@ const skillSchema = new mongoose.Schema<SkillDocument>(
     }
   },
   { timestamps: true }
-);
+)
 
-const Skill = mongoose.model<SkillDocument>("Skill", skillSchema);
-export default Skill;
+const Skill = mongoose.model<SkillDocument>("Skill", skillSchema)
+export default Skill
