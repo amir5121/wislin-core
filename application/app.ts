@@ -6,10 +6,11 @@ import logger from "morgan"
 import passport from "passport"
 import indexRouter from "./routes"
 import usersRouter from "./routes/users"
+import jobsRouter from "./routes/jobs"
 import skillsRouter from "./routes/skills"
-import cors from 'cors'
-import redis from 'redis'
-import connectRedis from 'connect-redis'
+import cors from "cors"
+import redis from "redis"
+import connectRedis from "connect-redis"
 
 const app = express()
 app.use(helmet())
@@ -19,11 +20,11 @@ const RedisStore = connectRedis(session)
 
 let sess = {
   secret: process.env.SESSION_SECRET || "pickasecret",
-  store: new RedisStore({client: redis.createClient()}),
+  store: new RedisStore({ client: redis.createClient() }),
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false
+    secure: false,
   },
 }
 
@@ -31,18 +32,19 @@ if (app.get("env") === "production") {
   app.set("trust proxy", 1) // trust first proxy
   sess.cookie.secure = true // serve secure cookies
 } else {
-  app.use(cors({
-    // origin: 'http://localhost:3000',
-    credentials: true,
-    origin: true,
-    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-  }))
+  app.use(
+    cors({
+      // origin: 'http://localhost:3000',
+      credentials: true,
+      origin: true,
+      optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+    })
+  )
 }
-
 
 app.use(session(sess))
 app.use(express.json())
-app.use(express.urlencoded({extended: false}))
+app.use(express.urlencoded({ extended: false }))
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -52,6 +54,7 @@ app.use(express.static(path.join(__dirname, "public")))
 app.use("/", indexRouter)
 app.use("/api/user", usersRouter)
 app.use("/api/skills", skillsRouter)
+app.use("/api/jobs", jobsRouter)
 
 // error handler
 // app.use(function (err, req: , res, _) {

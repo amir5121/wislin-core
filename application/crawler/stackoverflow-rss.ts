@@ -6,7 +6,7 @@ import { STACKOVERFLOW, STACKOVERFLOW_URL } from "../config/constants"
 import { parseString } from "xml2js"
 import Skill from "../models/skill"
 import Job from "../models/job"
-import mongoose, { onInsertCallback } from "../config/mongoose"
+import { onInsertCallback } from "../config/mongoose"
 
 const filename = `stackoverflow-rss-${
   new Date().toISOString().split("T")[0]
@@ -36,11 +36,14 @@ function extractAndInsert() {
             await Promise.all(
               job.category.map((el: string) => Skill.findOne({ name: el }))
             )
-          ).reduce<number[]>((filtered: number[], el: any): number[] => {
-            Boolean(el) && filtered.push(el._id)
-            !Boolean(el) && console.log(el)
-            return filtered
-          }, [])
+          ).reduce<number[]>(
+            (filtered: number[], el: any, currentIndex: number): number[] => {
+              Boolean(el) && filtered.push(el._id)
+              !Boolean(el) && console.log(currentIndex, el)
+              return filtered
+            },
+            []
+          )
           console.log(job.category, skills)
           if (job.category.length != skills.length) {
             console.debug(job)
@@ -78,4 +81,4 @@ function extractAndInsert() {
   })
 }
 
-setTimeout(mongoose.connection.close, 10)
+// setTimeout(mongoose.connection.close, 10)
