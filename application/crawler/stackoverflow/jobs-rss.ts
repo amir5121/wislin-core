@@ -18,10 +18,8 @@ async function rssPopulate(): Promise<void> {
   }
   if (!fs.existsSync(rssPath)) {
     await download(`${STACKOVERFLOW_URL}feed`, rssPath)
-    extractAndInsert()
-  } else {
-    extractAndInsert()
   }
+  extractAndInsert()
 }
 
 function extractAndInsert() {
