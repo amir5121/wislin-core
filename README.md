@@ -14,7 +14,7 @@ npm run populate [-- [--nocache]]
 
 this should become a cron job or something
 
-        tsc && node -r dotenv/config ./dist/crawler/stackoverflow-rss.js
+        tsc && node -r dotenv/config ./dist/crawler/stackoverflow/jobs-rss.js
 
 ## RSS
 

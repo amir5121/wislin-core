@@ -1,33 +1,20 @@
 import fs from "fs"
-import https from "https"
 import path from "path"
+import httpRequest from "./http-request"
 
-function download(url: string, dest: string, cb: (message?: string) => void) {
+async function download(url: string, dest: string) {
+  console.log("download", url, dest)
+  const response = await httpRequest(url)
+  if (response.res.statusCode === 302 && response.res.headers.location) {
+    console.debug("following redirect...")
+    await download(response.res.headers.location, dest)
+    return
+  } else if (response.res.statusCode !== 200) {
+    throw "failed with status code " + response.res.statusCode
+  }
   fs.mkdirSync(path.dirname(dest), { recursive: true })
-  const file = fs.createWriteStream(dest)
-  const request = https.get(url, (response) => {
-      // check if response is success
-      if (response.statusCode === 302 && response.headers.location) {
-        console.debug("following redirect...")
-        return download(response.headers.location, dest, cb)
-      } else if (response.statusCode !== 200) {
-        return cb("Response status was " + response.statusCode)
-      }
-
-      response.pipe(file)
-    }
-  )
-
-  file.on("finish", () => {
-    file.close()
-    cb()
-  })
-
-  request.on("error", (err) => {
-    fs.unlink(dest, () => {
-    })
-    return cb(err.message)
-  })
+  console.log("Writing buffer to disk")
+  fs.writeFileSync(dest, Buffer.concat(response.body))
 }
 
 export default download

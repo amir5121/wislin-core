@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="populate" type="js.build_tools.npm">
+    <package-json value="$PROJECT_DIR$/application/package.json" />
+    <command value="run" />
+    <scripts>
+      <script value="populate" />
+    </scripts>
+    <arguments value="-- --nocache" />
+    <node-interpreter value="$USER_HOME$/.nvm/versions/node/v14.16.1/bin/node" />
+    <node-options value="--trace-warnings --unhandled-rejections=strict" />
+    <envs />
+    <method v="2">
+      <option name="TypeScript.Before.Run" enabled="true" FAIL_ON_ERROR="true" CONFIG_PATH="$PROJECT_DIR$/application/tsconfig.json" />
+    </method>
+  </configuration>
+</component>
