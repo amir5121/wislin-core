@@ -23,9 +23,7 @@ const jobSchema = new mongoose.Schema<JobDocument>(
     link: String,
     type: { type: String, enum: JOB_TYPES },
     author: String,
-    skills:[
-      {type: mongoose.Schema.Types.ObjectId, ref: 'SKill'}
-    ],
+    skills: [{ type: mongoose.Schema.Types.ObjectId, ref: "Skill" }],
     title: String,
     description: String,
     publicationDate: Date,

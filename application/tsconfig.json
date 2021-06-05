@@ -10,6 +10,7 @@
     "removeComments": true,
     "preserveConstEnums": true,
     "baseUrl": ".",
+    "noImplicitThis": false,
     "strict": true
   },
   "lib": [

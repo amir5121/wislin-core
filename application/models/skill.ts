@@ -7,26 +7,29 @@ export interface SkillDocument extends mongoose.Document {
   updatedAt: Date
   stackoverflowMeta: {
     guid: number
-    excerptPostId: Number
-    wikiPostId: Number
+    excerpt: string
+    wiki: string
     count: Number
   }
 }
 
 const skillSchema = new mongoose.Schema<SkillDocument>(
   {
-    name: { type: String, index: true, unique: true, required: true },
-    synonyms: [
-      {
-        type: String,
-        unique: true,
-        index: true,
-      },
-    ],
+    name: {
+      type: String,
+      index: true,
+      unique: true,
+      required: true,
+      trim: true,
+    },
+    synonyms: {
+      type: [String],
+      trim: true,
+    },
     stackoverflowMeta: {
       guid: Number,
-      excerptPostId: Number,
-      wikiPostId: Number,
+      excerpt: String,
+      wiki: String,
       count: Number,
     },
   },

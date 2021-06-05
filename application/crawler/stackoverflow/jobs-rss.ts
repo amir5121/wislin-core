@@ -1,17 +1,21 @@
 import download from "../../utils/download"
-import { tempFolderPath } from "../../config/application"
+import { stackoverflowRssPath } from "../../config/application"
 import fs from "fs"
 import path from "path"
-import { STACKOVERFLOW_URL } from "../../config/constants"
+import { STACKOVERFLOW, STACKOVERFLOW_URL } from "../../config/constants"
 import { parseString } from "xml2js"
-import Skill from "../../models/skill"
+import Skill, { SkillDocument } from "../../models/skill"
+import Job from "../../models/job"
 
 const filename = `stackoverflow-rss-${
   new Date().toISOString().split("T")[0]
 }.xml`
-const rssPath = path.join(tempFolderPath, "stackoverflow-rss", filename)
+const rssPath = path.join(stackoverflowRssPath, filename)
 
 async function rssPopulate(): Promise<void> {
+  if (!fs.existsSync(stackoverflowRssPath)) {
+    fs.mkdirSync(stackoverflowRssPath)
+  }
   if (!fs.existsSync(rssPath)) {
     await download(`${STACKOVERFLOW_URL}feed`, rssPath)
     extractAndInsert()
@@ -27,11 +31,11 @@ function extractAndInsert() {
       return
     }
     parseString(data, function (err, result) {
-      result.rss.channel[0].item.slice(0, 20).map(async (job: any) => {
+      result.rss.channel[0].item.map(async (job: any) => {
         if (typeof job.category === "undefined" || job.category.length === 0) {
           console.debug(job)
         } else {
-          const skills: number[] = (
+          const skills: SkillDocument[] = (
             await Promise.all(
               job.category.map((el: string) =>
                 Skill.findOne({
@@ -39,45 +43,45 @@ function extractAndInsert() {
                 })
               )
             )
-          ).reduce<number[]>(
-            (filtered: number[], el: any, currentIndex: number): number[] => {
-              Boolean(el) && filtered.push(el._id)
-              !Boolean(el) && console.log(currentIndex, el)
+          ).reduce<SkillDocument[]>(
+            (filtered: SkillDocument[], el: any): SkillDocument[] => {
+              Boolean(el) && filtered.push(el)
+              // !Boolean(el) && console.log(currentIndex, el)
               return filtered
             },
             []
           )
-          console.log(job.category, skills)
           if (job.category.length != skills.length) {
-            console.debug(job)
-            console.log("oh fuck what you gonna do now?")
+            const skillsNameSynonyms = skills.reduce(
+              (filtered: string[], it) => {
+                filtered.push(it.name)
+                return filtered.concat(it.synonyms)
+              },
+              []
+            )
+            console.log(
+              "missing skills:",
+              job.category.filter(
+                (el: any) => !skillsNameSynonyms.includes(el)
+              ),
+              job.link[0]
+            )
             return
+          } else {
+            await Job.updateOne(
+              { guid: job.guid[0]._, type: STACKOVERFLOW },
+              {
+                guid: job.guid[0]._,
+                link: job.link[0],
+                type: STACKOVERFLOW,
+                author: job["a10:author"][0]["a10:name"][0],
+                skills: skills.map((el) => el._id),
+                title: job.title[0],
+                description: job.description[0],
+              },
+              { upsert: true, setDefaultsOnInsert: true }
+            )
           }
-
-          // console.table({
-          //   guid: job.guid[0]._,
-          //   link: job.link[0],
-          //   type: STACKOVERFLOW,
-          //   author: job["a10:author"][0]["a10:name"],
-          //   skills: skills,
-          //   title: job.title[0],
-          //   description: job.description[0],
-          // })
-          // Job.findOne({ guid: job.guid }, (err: any, doc: any) => {
-          //   !Boolean(doc) &&
-          //     Job.collection.insertOne(
-          //       {
-          //         guid: job.guid[0]._,
-          //         link: job.link[0],
-          //         type: STACKOVERFLOW,
-          //         author: job["a10:author"][0]["a10:name"],
-          //         skills: skills,
-          //         title: job.title[0],
-          //         description: job.description[0],
-          //       },
-          //       onInsertCallback
-          //     )
-          // })
         }
       })
     })

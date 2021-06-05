@@ -5,7 +5,7 @@ import httpRequest from "./http-request"
 async function download(url: string, dest: string) {
   console.log("download", url, dest)
   const response = await httpRequest(url)
-  if (response.res.statusCode === 302 && response.res.headers.location) {
+  if (response.res.statusCode / 100 === 3 && response.res.headers.location) {
     console.debug("following redirect...")
     await download(response.res.headers.location, dest)
     return
