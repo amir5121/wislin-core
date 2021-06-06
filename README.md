@@ -8,9 +8,23 @@ What I should learn (immediately) next!
 
 ```shell
 npm run populate [-- [--nocache]]
+npm run rss
 ```
 
-# ----- Notes to my self ------
+# User journey
+
+- The site can be opened in two places
+    - Home page
+        - if you open up a home page you could search for a skill you have and find relevant skills then you continue on
+          the skill landing
+        - This is flawed since you generally have more than one skill, so you need to be able to pick multiple skill,
+          and I need to figure out how to connect the dots
+        - To overcome this you can imagine all the picked skills a node and traverse your graph like that 
+        - I don't know if this is possible in neo4j. So I need to look that up 
+
+    - A Skill Landing
+
+## ----- Notes to my self ------
 
 this should become a cron job or something
 
