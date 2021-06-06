@@ -1,4 +1,4 @@
-import mongoose from "../config/mongoose"
+import mongoose from "../config/neo4j"
 
 export interface SkillDocument extends mongoose.Document {
   name: string

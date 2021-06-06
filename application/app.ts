@@ -51,7 +51,7 @@ app.use(passport.session())
 
 app.use(express.static(path.join(__dirname, "public")))
 
-app.use("/", indexRouter)
+app.use("/api", indexRouter)
 app.use("/api/user", usersRouter)
 app.use("/api/skills", skillsRouter)
 app.use("/api/jobs", jobsRouter)

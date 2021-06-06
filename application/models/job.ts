@@ -1,4 +1,4 @@
-import mongoose from "../config/mongoose"
+import mongoose from "../config/neo4j"
 import { JOB_TYPES } from "../config/constants"
 import { SkillDocument } from "./skill"
 
