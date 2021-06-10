@@ -22,13 +22,15 @@ async function rssPopulate(): Promise<void> {
   extractAndInsert()
 }
 
+let updatedCount = 0
+
 function extractAndInsert() {
   fs.readFile(rssPath, "utf8", (err, data) => {
     if (err) {
       console.error(err)
       return
     }
-    parseString(data, function (err, result) {
+    parseString(data, async function (err, result) {
       result.rss.channel[0].item.map(async (job: any) => {
         if (typeof job.category === "undefined" || job.category.length === 0) {
           console.debug(job)
@@ -66,6 +68,7 @@ function extractAndInsert() {
             )
             return
           } else {
+            updatedCount++
             await Job.updateOne(
               { guid: job.guid[0]._, type: STACKOVERFLOW },
               {
@@ -82,6 +85,7 @@ function extractAndInsert() {
           }
         }
       })
+      console.log("updated jobs:", updatedCount, await Job.countDocuments())
     })
   })
 }
