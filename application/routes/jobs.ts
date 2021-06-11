@@ -36,7 +36,7 @@ router.get("/:skillName/", async function (req, res, _) {
     res.send(
       jobsGroupedBySkill.map((el: any) => {
         el.name = skillMap[el._id]
-        el.url = `http://localhost:8080/api/jobs/${el.name}/`
+        el.url = `http://localhost:8090/api/jobs/${el.name}/`
         // console.log(el)
         return el
       }) || {}
