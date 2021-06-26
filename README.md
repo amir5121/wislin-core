@@ -8,35 +8,67 @@
 
 ## What questions this project will be trying to find an answer to
 
-1. What skills to learn?
-2. Which skills to improve upon
-3. How many and which jobs can you get in with stuff you know
-4. Which jobs you can land once you learned a certain set of skills
-5. Sort most requested skills by the effort to learn and salary
-6. How related are the skills that you know
-7. What's the transition cost? How hard is it to pick up new skill with set of skills you have
-8. Recommend resources to learn it. ask from people who know those skills
-9. What are the trending technologies and even predict what will become of each technology and tool
+First is need to gather info
+
+- Choose from the skills that users have picked so far
+- From the jobs you have crawled
+
+01. What skills to learn?
+    - Filters
+        - Passed 5 years for example
+        - Pay range
+        - Personality trails?
+    - Questions
+        - What's the required experience
+        - How skills are related to one another
+        - What's the pay range
+        - Tag the skills with science, personality traits
+        - How hard is it to learn
+        - Skills have date as well
+            - for jobs is when it as crawled
+            - for people, it's when they last used it
+
+02. Which skills to improve upon?
+    - to answer this you need to know the required experience
+03. Gather info on whether your recommendation was any good
+    - well this comes after you generated the data
+    - plus need to take into account the result:
+        - one approach is to generate the result in multiple ways and see which brings a more positive feedback
+        - other than that you might be able to do a time base upgrade. gather response and feedback and try to improve
+          upon that
+        - this might require me to save the users query give them an id or other stuff
+04. Job recommendation
+    - Since I want to take experience into account, I would need to rate the jobs
+
+05. Which jobs you can land once you learned a certain set of skills?
+    - Same as job recommendation but which skill they are looking into is also considered they have learned
+06. Sort most requested skills by the effort to learn and salary
+07. What's the transition cost? How hard is it to pick up new skill with set of skills you have
+    - I need to find a way to check how long it takes to learn something maybe do how long does it take to lean 20% how
+      long does it learn 80%
+08. Recommend resources to learn it. ask from people who know those skills
+09. What are the trending technologies and even predict what will become of each technology and tool
 10. Maybe enable peoples to submit their progress on learning those new skills? (not sure if possible or reliable)
+11. Maybe you can tag personality traits you might even be able to recommend based on peoples personality thought you
+    need to figure out how to gather that info. Maybe ask the people
+12. How related are the skills that you know
 
-Skill | RDBMS | Mongodb | Dgraph | RDBMS-Graph | RDBMS-redis | Mongo-redis | Mongo-Graph
---- | --- | --- | --- |--- |--- |--- |--- 
-#1 | x00 | x01  | 02 | 03 | 04 | 05 | 06 | 07 
-#2 | ✓10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 
-#3 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 37 
-#4 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 
-#4 | 40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 
-#5 | 50 | 51 | 52 | 53 | 54 | 55 | 56 | 57
-#6 | 60 | 61 | 62 | 63 | 64 | 65 | 66 | 67 
-#7 | 70 | 71 | 72 | 73 | 74 | 75 | 76 | 77 
-#8 | 80 | 81 | 82 | 83 | 84 | 85 | 86 | 87 
-#9 | 90 | 91 | 92 | 93 | 94 | 95 | 96 | 97 
-#10 | 100 | 101 | 102 | 103 | 104 | 105 | 106 | 107 
+### So based on those features what data would you need to keep track of?
 
-Explanation
+#### Skill
 
-00. for in depth result so many joins is necessary
-01. Even worse than RDBMS since it would require many hits to database
+- name and synonyms
+- difficulty to learn
+- list of tags including (scientific, personality trait, ...)
+- stacks (tech, ui-ux, ... )
+
+#### Job
+
+- Title
+- Pay
+- Location
+- stack (tech, ui-ux, ... )
+- skills (List of skills)
 
 ## Features to keep in mind
 
