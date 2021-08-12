@@ -1,4 +1,4 @@
-# wislin-core
+# Wislin Core
 
 **What I should learn (immediately) next!**
 
@@ -17,6 +17,7 @@ First is need to gather info
     - Filters
         - Passed 5 years for example
         - Pay range
+        - Location based querying
         - Personality trails?
     - Questions
         - What's the required experience
@@ -76,6 +77,7 @@ First is need to gather info
   UI/UX toolsets
 - Tagging skills and jobs for example Soft Skill, tech, UI/UX, helps humanity, scientific, frontend, backend... So you
   can filter based on them
+- one might already know that you are suggesting let them say that they know that
 
 ## I'm writing these out because I'm trying to find the right tool set for this project.
 
@@ -121,3 +123,5 @@ this should become a cron job or something
 dependency for [node-7z](https://github.com/quentinrossetti/node-7z) is `p7zip-full` on linux
 
 remember check out greenhouse it's [pi](https://developers.greenhouse.io/harvest.html#get-list-jobs) 
+
+code academy career path
