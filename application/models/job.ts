@@ -5,7 +5,7 @@ import { SkillDocument } from "./skill"
 export interface JobDocument extends mongoose.Document {
   guid: string
   link: string
-  type: "stackoverflow" | "indeed"
+  type: "stackoverflow" | "indeed" | "linkedin"
   author: string
   skills: SkillDocument[]
   title: string

@@ -6,7 +6,7 @@
       <script value="populate" />
     </scripts>
     <arguments value="-- --nocache" />
-    <node-interpreter value="$USER_HOME$/.nvm/versions/node/v14.16.1/bin/node" />
+    <node-interpreter value="$USER_HOME$/.nvm/versions/node/v16.9.0/bin/node" />
     <node-options value="--trace-warnings --unhandled-rejections=strict" />
     <envs />
     <method v="2">

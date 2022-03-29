@@ -5,9 +5,7 @@ import Skill from "../models/skill"
 const router = express.Router()
 
 router.get("/jobs/", async function (req, res, _) {
-  res.send(
-    (await Job.find({}).populate("skills", "name").limit(10).exec()) || {}
-  )
+  res.send(await Job.find().populate("skills", "name").limit(10).exec())
 })
 
 router.get("/:skillName/", async function (req, res, _) {

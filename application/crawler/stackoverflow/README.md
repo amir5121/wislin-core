@@ -3,7 +3,7 @@
 [First 50k tags](https://data.stackexchange.com/stackoverflow/csv/1743322)
 
 ```sql
-# Fetching the first 50k
+-- Fetching the first 50k
 select top 50000 t.id,
   string_agg(TagSynonyms.SourceTagName, '+#+') as synonyms,
   t.tagName,
@@ -23,7 +23,7 @@ order by t.tagName asc
 [Second 50k tags](https://data.stackexchange.com/stackoverflow/csv/1743329)
 
 ```sql
-# Fetching the the second 50k
+-- Fetching the the second 50k
 select t.id,
 t."count" as tagCount,
   string_agg(TagSynonyms.SourceTagName, '+#+') as synonyms,
