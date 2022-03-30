@@ -1,6 +1,7 @@
 import { Browser, HTTPRequest, HTTPResponse, Page } from "puppeteer"
 import { browserDefaults } from "./linkedin-constants"
 import { logger } from "../../utils/logger"
+import { LINKEDIN } from "../../config/constants"
 
 const puppeteer = require("puppeteer")
 
@@ -53,6 +54,7 @@ class LinkedinCrawler {
       request.url().includes(".jpeg") ||
       request.url().includes(".png") ||
       request.url().includes(".gif") ||
+      request.url().includes(".svg") ||
       request.url().includes(".css")
     ) {
       return request.abort()
@@ -76,16 +78,23 @@ class LinkedinCrawler {
       await page.setRequestInterception(true)
       page.on("request", LinkedinCrawler.puppeteerRequestFilter)
       page.on("response", LinkedinCrawler.puppeteerResponseWatch)
-      await LinkedinCrawler.listLinks(page, 2)
+      // const pagesDetail = await LinkedinCrawler.listPageDetails(page, 1)
+      // console.log("ppppaaagegee de", pagesDetail)
+      const pageDetail = await LinkedinCrawler.fetchDetail(
+        page,
+        " https://www.linkedin.com/jobs/view/manufacturing-engineer-at-cast-products-inc-2997958259?refId=2yYjfrLjFSowwNERUZnmHA%3D%3D&trackingId=FjjH9La4g0XXbAF9kcDN9g%3D%3D&position=6&pageNum=0&trk=public_jobs_jserp-result_search-card"
+      )
+
+      console.log("ppppaaagegee de", pageDetail)
     }
     await this.close()
   }
 
-  private static async listLinks(
+  private static async listPageDetails(
     page: Page,
     pageCount: number = 1
-  ): Promise<string[]> {
-    let links: string[] = []
+  ): Promise<object[]> {
+    let pageDetails: object[] = []
     for (let i = 0; i < pageCount * 25; i += 25) {
       await page.goto(
         `https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?geoId=103644278&f_TPR=r86400&position=25&pageNum=1&start=${i}`,
@@ -96,11 +105,99 @@ class LinkedinCrawler {
       const newJobLinks = await page.$$eval(".base-card__full-link", (x) => {
         return x.map((el) => el.getAttribute("href"))
       })
-
-      links = links.concat(newJobLinks as string[])
+      if (newJobLinks && newJobLinks.length > 0) {
+        for (let link of newJobLinks as string[]) {
+          console.log("SSSSSSS", link)
+          const pageDetail = await LinkedinCrawler.fetchDetail(page, "link")
+          console.log("SSSSSSSDETAIL", pageDetail)
+          pageDetails.concat(pageDetail)
+        }
+      }
+      // links = links.concat(newJobLinks as string[])
     }
-    console.log("@#!@#links", links.length)
-    return links
+
+    return pageDetails
+  }
+  private static async fetchDetail(
+    page: Page,
+    pageUrl: string
+  ): Promise<object> {
+    await page.goto(pageUrl, {
+      waitUntil: "load",
+    })
+
+    function extractCommentedJobId(element: string) {
+      return element.split("-")[2]
+    }
+    const guid = extractCommentedJobId(
+      await page.$$eval(
+        "#jobId,#decoratedJobPostingId",
+        (x) => x && (x[0] as HTMLElement).innerHTML
+      )
+    )
+    let preparedJSON = undefined
+    try {
+      preparedJSON = await page.$eval(
+        'script[type="application/ld+json"]',
+        (x) => x && (x as HTMLElement).innerText
+      )
+    } catch (e) {
+      logger.debug(LinkedinCrawler.tag, "Could not find prepared ld+json")
+    }
+
+    if (Boolean(preparedJSON)) {
+      const parsed = JSON.parse(preparedJSON)
+      return {
+        guid: guid,
+        link: pageUrl,
+        type: LINKEDIN,
+        author: parsed.hiringOrganization.name,
+        // skills: parsed,
+        title: parsed.title,
+        description: parsed.description,
+        publicationDate: new Date(parsed.datePosted),
+        referenceUpdatedDate: new Date(),
+        location: [
+          parsed.jobLocation.address.addressCountry,
+          parsed.jobLocation.address.addressRegion,
+          parsed.jobLocation.address.addressLocality,
+        ]
+          .filter(Boolean)
+          .join(", "),
+        salaryMinValue: parsed.estimatedSalary?.value?.minValue,
+        salaryMaxValue: parsed.estimatedSalary?.value?.maxValue,
+        currency: parsed.estimatedSalary?.currency,
+      }
+    } else {
+      return {
+        guid: guid,
+        link: pageUrl,
+        type: LINKEDIN,
+        author: await page.$eval(
+          "sub-nav-cta__optional-url",
+          (x) => x && (x as HTMLElement).innerText
+        ),
+        title: await page.$eval(
+          "unify-apply-page__job-title",
+          (x) => x && (x as HTMLElement).innerText
+        ),
+        description: await page.$eval(
+          ".show-more-less-html__markup",
+          (x) => x && (x as HTMLElement).innerText
+        ),
+        publicationDate: new Date(),
+        referenceUpdatedDate: new Date(),
+        location: await page.$eval(
+          ".unify-apply-page__company-location",
+          (x) => x && (x as HTMLElement).innerText
+        ),
+        salaryMinValue: parsed.estimatedSalary?.value?.minValue,
+        salaryMaxValue: parsed.estimatedSalary?.value?.maxValue,
+        currency: parsed.estimatedSalary?.currency,
+      }
+    }
+
+    return {}
   }
 
   private close = async (): Promise<void> => {
@@ -114,7 +211,7 @@ class LinkedinCrawler {
   }
 }
 
-new LinkedinCrawler().crawl().then((r) => console.log("DONE"))
+new LinkedinCrawler().crawl().then(() => console.log("DONE"))
 
 const x = {
   "@context": "http://schema.org",
@@ -205,6 +302,48 @@ const vx = {
   skills: "",
   title: "Software Engineer",
   validThrough: "2022-04-28T04:15:47.000Z",
+  educationRequirements: {
+    "@type": "EducationalOccupationalCredential",
+    credentialCategory: "bachelor degree",
+  },
+}
+
+const xs = {
+  "@context": "http://schema.org",
+  "@type": "JobPosting",
+  datePosted: "2022-03-30T10:13:06.000Z",
+  description:
+    "&lt;ul&gt;&lt;li&gt;Description:* The Quality Control group supports manufacturing operations at the site.&lt;br&gt;&lt;br&gt;&lt;/li&gt;&lt;/ul&gt;The facility manufactures two pharmaceutical products - a transdermal patch and an aerosol inhalant.&lt;br&gt;&lt;br&gt;The QC team supports testing of raw material, in-process, and finished product testing. The candidate will provide direct analytical activities related to finished product and NPI testing. Maintain accurate documentation and a laboratory environment consistent with laboratory key safe behaviors, Good Manufacturing Practice (GMP) and Good Documentation Practice (GDP).&lt;br&gt;&lt;br&gt;The role will be responsible for but not limited to the following specific duties:&lt;br&gt;&lt;ul&gt;&lt;li&gt;Prepare sample solutions, standards, and reagents.&lt;/li&gt;&lt;li&gt;Perform wet chemical and instrumental analysis, including Near IR, FTIR, HPLC, UV Spectrophotometer, and Gas Chromatography.&lt;/li&gt;&lt;li&gt;Analyze raw materials using USP/NF/ EP testing methods.&lt;/li&gt;&lt;li&gt;Analyze in-process and finished products using analytical chemistry methods.&lt;/li&gt;&lt;li&gt;Assist with equipment qualification and with method crossover.&lt;/li&gt;&lt;li&gt;Review data for acceptance criteria against specification ranges and report results in LIMS and to laboratory management.&lt;/li&gt;&lt;li&gt;Assist with laboratory investigations&lt;/li&gt;&lt;li&gt;MUST HAVE:* Bachelor Degree in Scientific discipline (Chemistry, Biochemistry, Biotechnology, Chemical Engineering, etc.)&lt;br&gt;&lt;br&gt;&lt;/li&gt;&lt;/ul&gt;About Actalent:&lt;br&gt;&lt;br&gt;Actalent connects passion with purpose. Our scalable talent solutions and services capabilities drive value and results and provide the expertise to help our customers achieve more. Every day, our experts around the globe are making an impact. We’re supporting critical initiatives in engineering and sciences that advance how companies serve the world. Actalent promotes consultant care and engagement through experiences that enable continuous development. Our people are the difference. Actalent is an operating company of Allegis Group, the global leader in talent solutions. The company is an equal opportunity employer and will consider all applications without regards to race, sex, age, color, religion, national origin, veteran status, disability, sexual orientation, gender identity, genetic information or any characteristic protected by law.",
+  employmentType: "CONTRACTOR",
+  hiringOrganization: {
+    "@type": "Organization",
+    name: "Actalent",
+    sameAs: "https://www.linkedin.com/company/actalentservices",
+    logo: "https://media-exp1.licdn.com/dms/image/C4D0BAQFqsRl3wX1d2Q/company-logo_200_200/0/1631628816936?e=1656547200&amp;v=beta&amp;t=eB3EtrtzgAgscvkxMnFucDikK1vbjrfexfUmN4lRT-s",
+  },
+  identifier: {
+    "@type": "PropertyValue",
+    name: "Actalent",
+    value: "987d856f4c81b6e4166f34b076a99c9b",
+  },
+  image:
+    "https://media-exp1.licdn.com/dms/image/C4D0BAQFqsRl3wX1d2Q/company-logo_100_100/0/1631628816936?e=1656547200&amp;v=beta&amp;t=TJ_kf3KZ7Pt5LtTLna43XoQyBi8cD9cofmuwPxgt3dc",
+  industry: "IT Services and IT Consulting",
+  jobLocation: {
+    "@type": "Place",
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "US",
+      addressLocality: "Los Angeles",
+      addressRegion: "CA",
+      streetAddress: null,
+    },
+    latitude: 34.05224,
+    longitude: -118.24335,
+  },
+  skills: "",
+  title: "Entry Level Chemist",
+  validThrough: "2022-04-29T10:13:56.000Z",
   educationRequirements: {
     "@type": "EducationalOccupationalCredential",
     credentialCategory: "bachelor degree",

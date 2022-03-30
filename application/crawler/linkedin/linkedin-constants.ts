@@ -40,7 +40,7 @@ const browserDefaults: ScraperOptions = {
   // @ts-ignore
   defaultViewport: null,
   pipe: true,
-  slowMo: 250,
+  slowMo: 500,
 }
 
 export { browserDefaults }

@@ -13,6 +13,9 @@ export interface JobDocument extends mongoose.Document {
   publicationDate: Date
   referenceUpdatedDate: Date
   location: string
+  salaryMinValue: number
+  salaryMaxValue: number
+  currency: string
   createdAt: Date
   updatedAt: Date
 }
@@ -29,6 +32,9 @@ const jobSchema = new mongoose.Schema<JobDocument>(
     publicationDate: Date,
     referenceUpdatedDate: Date,
     location: String,
+    salaryMinValue: Number,
+    salaryMaxValue: Number,
+    currency: String,
   },
   { timestamps: true }
 )

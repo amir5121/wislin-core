@@ -8,6 +8,16 @@ router.get("/jobs/", async function (req, res, _) {
   res.send(await Job.find().populate("skills", "name").limit(10).exec())
 })
 
+router.get("/jobs-missing-skills/", async function (req, res, _) {
+  res.send(
+    await Job.where("skills")
+      .equals(null)
+      .populate("skills", "name")
+      .limit(25)
+      .exec()
+  )
+})
+
 router.get("/:skillName/", async function (req, res, _) {
   const skill = await Skill.findOne({ name: req.params.skillName }).exec()
   if (skill) {
