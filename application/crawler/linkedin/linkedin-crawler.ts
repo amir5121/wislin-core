@@ -1,5 +1,5 @@
 import { Browser, HTTPRequest, HTTPResponse, Page } from "puppeteer"
-import { browserDefaults } from "./linkedin-constants"
+import { browserDefaults, linkedinCrawlLocations } from "./linkedin-constants"
 import { logger } from "../../utils/logger"
 import { LINKEDIN } from "../../config/constants"
 import Job, { JobSchema } from "../../models/job"
@@ -88,22 +88,34 @@ class LinkedinCrawler {
     page: Page,
     pageCount: number = 1
   ): Promise<JobSchema[]> {
+    process.stdout.write(".")
     let pageDetails: JobSchema[] = []
-    for (let i = 0; i < pageCount * 25; i += 25) {
-      await page.goto(
-        `https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?geoId=103644278&f_TPR=r86400&position=25&pageNum=1&start=${i}`,
-        {
-          waitUntil: "load",
-        }
-      )
-      const newJobLinks = await page.$$eval(".base-card__full-link", (x) => {
-        return x.map((el) => el.getAttribute("href"))
-      })
-      if (newJobLinks && newJobLinks.length > 0) {
-        for (let link of newJobLinks as string[]) {
-          logger.info(LinkedinCrawler.tag, `Scraping ${link}`)
-          const pageDetail = await LinkedinCrawler.fetchDetail(page, link)
-          pageDetails.push(pageDetail)
+    for (const location of linkedinCrawlLocations) {
+      for (let i = 0; i < pageCount * 25; i += 25) {
+        await page.goto(
+          `https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?geoId=${location}&f_TPR=r86400&position=25&pageNum=1&start=${i}`,
+          {
+            waitUntil: "load",
+          }
+        )
+        const newJobLinks = await page.$$eval(".base-card__full-link", (x) => {
+          return x.map((el) => el.getAttribute("href"))
+        })
+        console.log(
+          "looking at",
+          location,
+          "found",
+          newJobLinks.length,
+          "links to crawl on",
+          i,
+          "iteration"
+        )
+        if (newJobLinks && newJobLinks.length > 0) {
+          for (let link of newJobLinks as string[]) {
+            logger.info(LinkedinCrawler.tag, `Scraping ${link}`)
+            const pageDetail = await LinkedinCrawler.fetchDetail(page, link)
+            pageDetails.push(pageDetail)
+          }
         }
       }
     }
@@ -135,7 +147,6 @@ class LinkedinCrawler {
     } catch (e) {
       logger.debug(LinkedinCrawler.tag, "Could not find prepared ld+json")
     }
-
     if (typeof preparedJSON !== "undefined" && Boolean(preparedJSON)) {
       const parsed = JSON.parse(preparedJSON)
       return {
@@ -202,7 +213,7 @@ class LinkedinCrawler {
           (x) => x && (x as HTMLElement).innerText
         ),
         title: await page.$eval(
-          ".unify-apply-page__job-title",
+          ".top-card-layout__title",
           (x) => x && (x as HTMLElement).innerText
         ),
         description: await page.$eval(
@@ -212,7 +223,7 @@ class LinkedinCrawler {
         publicationDate: new Date(),
         referenceUpdatedDate: new Date(),
         location: await page.$eval(
-          ".unify-apply-page__company-location",
+          ".main-job-card__location",
           (x) => x && (x as HTMLElement).innerText
         ),
         salaryMinValue: salaryMinValue,

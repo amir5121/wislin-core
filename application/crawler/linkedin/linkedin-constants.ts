@@ -10,9 +10,12 @@ export type ScraperOptions = LaunchOptions &
 
 const defaultWidth = 1472
 const defaultHeight = 828
-const linkedinCrawlLocations = [
+export const linkedinCrawlLocations = [
   101174742, // Canada
   103644278, // USA
+  101282230, // GERMANY
+  101165590, // United Kingdom
+  102890719, // Netherlands
 ]
 const browserDefaults: ScraperOptions = {
   headless: true,
@@ -40,7 +43,7 @@ const browserDefaults: ScraperOptions = {
   // @ts-ignore
   defaultViewport: null,
   pipe: true,
-  slowMo: 500,
+  slowMo: 1000,
 }
 
 export { browserDefaults }
