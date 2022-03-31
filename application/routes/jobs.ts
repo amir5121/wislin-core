@@ -5,8 +5,20 @@ import Skill from "../models/skill"
 const router = express.Router()
 
 router.get("/jobs/", async function (req, res, _) {
+  res.send(await Job.find().populate("skills", "name").limit(10).exec())
+})
+
+router.get("/jobs-missing-skills/", async function (req, res, _) {
+  res.send(await Job.where("skills").equals([]).limit(25).exec())
+})
+// localhost/api/jobs/crawled/linkedin
+router.get("/crawled/:crawler/", async function (req, res, _) {
   res.send(
-    (await Job.find({}).populate("skills", "name").limit(10).exec()) || {}
+    await Job.where("type")
+      .equals(req.params.crawler)
+      .populate("skills", "name")
+      .limit(25)
+      .exec()
   )
 })
 

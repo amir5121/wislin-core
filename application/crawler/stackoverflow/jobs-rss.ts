@@ -32,6 +32,7 @@ function extractAndInsert() {
     }
     parseString(data, async function (err, result) {
       result.rss.channel[0].item.map(async (job: any) => {
+        console.log("@@@@@", job)
         if (typeof job.category === "undefined" || job.category.length === 0) {
           console.debug(job)
         } else {
@@ -62,7 +63,7 @@ function extractAndInsert() {
             console.log(
               "missing skills:",
               job.category.filter(
-                (el: any) => !skillsNameSynonyms.includes(el)
+                (el: string) => !skillsNameSynonyms.includes(el)
               ),
               job.link[0]
             )
@@ -75,6 +76,10 @@ function extractAndInsert() {
                 guid: job.guid[0]._,
                 link: job.link[0],
                 type: STACKOVERFLOW,
+                location:
+                  typeof job.location !== "undefined"
+                    ? job.location[0]._
+                    : null,
                 author: job["a10:author"][0]["a10:name"][0],
                 skills: skills.map((el) => el._id),
                 title: job.title[0],
