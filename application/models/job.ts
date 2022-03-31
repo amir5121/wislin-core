@@ -2,7 +2,7 @@ import mongoose from "../config/mongoose"
 import { JOB_TYPES } from "../config/constants"
 import { SkillDocument } from "./skill"
 
-export interface JobDocument extends mongoose.Document {
+export interface JobSchema {
   guid: string
   link: string
   type: "stackoverflow" | "indeed" | "linkedin"
@@ -16,6 +16,8 @@ export interface JobDocument extends mongoose.Document {
   salaryMinValue: number
   salaryMaxValue: number
   currency: string
+}
+export interface JobDocument extends mongoose.Document, JobSchema {
   createdAt: Date
   updatedAt: Date
 }
