@@ -4,7 +4,7 @@
 
 **Pick the best career path based on trends and job listings.**
 
-*This isn't actually the documentation for now I'm just trying to keep my head clear*
+*This isn't actually the documentation for now I'm just trying to get my head clear*
 
 ## What questions this project will be trying to find an answer to
 
